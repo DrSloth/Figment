@@ -1,10 +1,14 @@
 use std::fmt;
 use std::sync::atomic::Ordering;
 
+#[cfg(not(feature="fallback-atomic"))]
+use std::sync::atomic::AtomicU64;
+
+#[cfg(feature="fallback-atomic")]
 use atomic::Atomic;
+
 use serde::{de, ser};
 use crate::profile::{Profile, ProfileTag};
-
 /// An opaque, unique tag identifying a value's [`Metadata`](crate::Metadata)
 /// and profile.
 ///
@@ -18,7 +22,12 @@ use crate::profile::{Profile, ProfileTag};
 #[derive(Copy, Clone)]
 pub struct Tag(u64);
 
+#[cfg(feature="fallback-atomic")]
 static COUNTER: Atomic<u64> = Atomic::new(1);
+
+#[cfg(not(feature="fallback-atomic"))]
+static COUNTER: AtomicU64 = AtomicU64::new(1);
+
 
 impl Tag {
     /// The default `Tag`. Such a tag will never have associated metadata and
