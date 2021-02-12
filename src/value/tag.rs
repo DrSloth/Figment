@@ -1,6 +1,7 @@
 use std::fmt;
-use std::sync::atomic::{Ordering, AtomicU64};
+use std::sync::atomic::Ordering;
 
+use atomic::Atomic;
 use serde::{de, ser};
 use crate::profile::{Profile, ProfileTag};
 
@@ -17,7 +18,7 @@ use crate::profile::{Profile, ProfileTag};
 #[derive(Copy, Clone)]
 pub struct Tag(u64);
 
-static COUNTER: AtomicU64 = AtomicU64::new(1);
+static COUNTER: Atomic<u64> = Atomic::new(1);
 
 impl Tag {
     /// The default `Tag`. Such a tag will never have associated metadata and
